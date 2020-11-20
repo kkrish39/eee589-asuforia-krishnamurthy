@@ -11,6 +11,7 @@ public class Asuforia {
 
     static {
         System.loadLibrary("opencv_java4");
+        System.loadLibrary("pose_estimation");
     }
 
     Asuforia(PoseListener poseListener, Image im, Surface sf){
