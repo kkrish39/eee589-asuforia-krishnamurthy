@@ -10,7 +10,7 @@ public class Asuforia {
     Surface surface;
 
     static {
-        System.loadLibrary("opencv_java");
+        System.loadLibrary("opencv_java4");
     }
 
     Asuforia(PoseListener poseListener, Image im, Surface sf){
@@ -19,9 +19,7 @@ public class Asuforia {
         this.surface = sf;
     }
 
-    public Asuforia() {
-
-    }
+    public Asuforia() {}
 
     void onImageAvailable(){
         //Call Native pose Estimation
