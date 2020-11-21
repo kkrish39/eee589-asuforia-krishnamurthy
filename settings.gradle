@@ -1,3 +1,4 @@
+include ':asuforia'
 include ':app'
 rootProject.name = "asuforia_library"
 include ':OpenCV'

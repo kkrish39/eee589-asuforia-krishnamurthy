@@ -6,6 +6,9 @@ import android.media.Image;
 import android.os.Bundle;
 import android.view.Surface;
 
+import com.example.asuforia.Asuforia;
+import com.example.asuforia.PoseListener;
+
 public class MainActivity extends AppCompatActivity{
     Asuforia af;
     Image im;

@@ -1,4 +1,4 @@
-package com.example.asuforia_library;
+package com.example.asuforia;
 
 import android.media.Image;
 import android.view.Surface;
@@ -14,7 +14,7 @@ public class Asuforia {
         System.loadLibrary("pose_estimation");
     }
 
-    Asuforia(PoseListener poseListener, Image im, Surface sf){
+    public Asuforia(PoseListener poseListener, Image im, Surface sf){
         this.poseListener = poseListener;
         this.image = im;
         this.surface = sf;
@@ -25,19 +25,19 @@ public class Asuforia {
 
     public Asuforia() {}
 
-    void onImageAvailable(){
+    public void onImageAvailable(){
         /*Native pose Estimation call to find R and T vectors*/
         perform_pose_estimation();
 
         this.poseListener.onPose(/*Must populate with R ant T vectors and image data*/);
     }
 
-    void startEstimation(){
+    public void startEstimation(){
         // Start camera
         onImageAvailable();
     }
 
-    void endEstimation(){
+    public void endEstimation(){
         // Stop camera
     }
 
