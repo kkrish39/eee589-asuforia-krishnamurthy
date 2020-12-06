@@ -1,31 +1,40 @@
 package com.example.asuforia_library;
 
+import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.content.Context;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
+import android.graphics.Canvas;
+import android.graphics.Color;
+import android.graphics.Paint;
+import android.graphics.PixelFormat;
+import android.graphics.SurfaceTexture;
 import android.hardware.camera2.CameraAccessException;
 import android.media.Image;
+import android.os.Build;
 import android.os.Bundle;
 import android.view.Surface;
+import android.view.SurfaceHolder;
+import android.view.SurfaceView;
 import android.view.TextureView;
 
 import com.example.asuforia.Asuforia;
 import com.example.asuforia.PoseListener;
 
 import java.io.File;
-import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
-import java.io.IOException;
 import java.io.InputStream;
+import java.nio.ByteBuffer;
+import java.util.Random;
 
 public class MainActivity extends AppCompatActivity{
-    Asuforia af;
-    Image im;
-    Surface sf;
+    private Asuforia af;
 
-    TextureView textureView;
-    PoseListener poseListener;
-    File reference_surface;
+    private TextureView textureView;
+    private PoseListener poseListener;
+    private File reference_surface;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -34,60 +43,55 @@ public class MainActivity extends AppCompatActivity{
         textureView = (TextureView) findViewById(R.id.textureview);
 
         try {
-
-            InputStream is = getResources().openRawResource(R.raw.reference_surface);
+            /*Get the reference image from the local PC file system and convert it into the android file system*/
+            InputStream inputStream = getResources().openRawResource(R.raw.reference_surface);
             File directory = getDir("ref", Context.MODE_PRIVATE);
             reference_surface = new File(directory, "reference_surface.jpg");
-            FileOutputStream os = new FileOutputStream(reference_surface);
+            FileOutputStream outputStream = new FileOutputStream(reference_surface);
 
             byte[] buffer = new byte[4096];
             int bytesRead;
-            while ((bytesRead = is.read(buffer)) != -1) {
-                os.write(buffer, 0, bytesRead);
+            while ((bytesRead = inputStream.read(buffer)) != -1) {
+                outputStream.write(buffer, 0, bytesRead);
             }
 
-            is.close();
-            os.close();
+            inputStream.close();
+            outputStream.close();
         }catch (Exception e){
             e.printStackTrace();
         }
 
+        //TODO shoud remove
+        Random r = new Random();
+
         poseListener = new PoseListener() {
+            @RequiresApi(api = Build.VERSION_CODES.M)
             @Override
-            public void onPose(Image image) {
-                System.out.println("Estimated Pose. About to color");
+            /*On pose listener callback with the captured image and the Rotational and Translational vector */
+            public void onPose(Image image, float[] RTVector) {
 
             }
+
         };
 
-
-        System.out.println(reference_surface.getAbsolutePath());
-        af = new Asuforia(poseListener, im, sf, this, textureView);
-    }
-
-    @Override
-    protected void onStart() {
-        System.out.println("Starting Pose Estimation");
-        af.onResumeActivity();
-        /* On entering foreground, start Estimation */
+        /*Initialize the library with */
+        af = new Asuforia(poseListener, reference_surface.getAbsolutePath(), MainActivity.this, textureView);
         try {
             af.startEstimation();
         } catch (CameraAccessException e) {
             e.printStackTrace();
         }
+    }
 
+    @Override
+    protected void onStart() {
         super.onStart();
-//        getDelegate().onStart();
+        af.onResumeActivity();
     }
 
     @Override
     protected void onStop() {
-        System.out.println("Ending Pose Estimation");
-        af.onPauseActivity();
-        /* On leaving foreground, End estimation */
-        af.endEstimation();
-
         super.onStop();
-//        getDelegate().onStop();
+        af.onPauseActivity();
     }
 }
