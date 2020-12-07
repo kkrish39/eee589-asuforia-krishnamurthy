@@ -221,8 +221,35 @@ Java_com_example_asuforia_NativePoseEstimatorUtil_perform_1pose_1estimation(JNIE
 
                 jfloatArray outputVector = env->NewFloatArray(6);
                 env->SetFloatArrayRegion( outputVector, 0, 6, &combinedRTVector[0] );
+
+                /*Release memory*/
+                cameraCoefficentMatrix.release();
+                rotationVector.release();
+                translationVector.release();
+                inputImgDetectedFeaturePoints.clear();
+                reference3DFeaturePoints.clear();
+                inliers.clear();
+                inliersVector.clear();
+                homography.release();
+                inputImgDetectedFeatureDescriptors.release();
+                matchPoint1.clear();
+                matchPoint2.clear();
+
                 return outputVector;
             }
+
+            /*Release memory*/
+            cameraCoefficentMatrix.release();
+            rotationVector.release();
+            translationVector.release();
+            inputImgDetectedFeaturePoints.clear();
+            reference3DFeaturePoints.clear();
+            inliers.clear();
+            inliersVector.clear();
+            homography.release();
+            inputImgDetectedFeatureDescriptors.release();
+            matchPoint1.clear();
+            matchPoint2.clear();
         }
     }
 

@@ -2,7 +2,12 @@ package com.example.asuforia;
 
 import android.media.Image;
 
+/*PoseListener Interface*/
 public interface PoseListener {
-    void onPose(/*Must populate with R ant T vectors and image data*/ Image image, float[] RTVector);
-
+    /*On pose method to paint the image with the cube
+    * @image - image data
+    * @RTVector - Rotational and Translational Vector
+    * */
+    void onPose(Image image, float[] RTVector);
+    void onSurface();
 }

@@ -23,7 +23,8 @@ find_library( # Sets the name of the path variable.
 
 target_link_libraries( # Specifies the target library.
         draw_cube
-
+        -ljnigraphics
+        -landroid
         lib_opencv
         # Links the target library to the log library
         # included in the NDK.
