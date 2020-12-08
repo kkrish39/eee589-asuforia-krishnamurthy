@@ -54,7 +54,8 @@ public class CameraInitializer {
     private static final Integer MAX_IMAGES = 2;
 
     private static int count = 0;
-    private static 
+    private static double movingAverage = 0;
+//    private static
     public CameraInitializer(Context context, PoseListener poseListener, TextureView textureView){
         this.context =context;
         this.poseListener = poseListener;
@@ -122,9 +123,14 @@ public class CameraInitializer {
                 try {
                     Image im = reader.acquireLatestImage();
 
+                    long startTime = System.currentTimeMillis();
                     float[] rotationAndTranslationVec = NativePoseEstimatorUtil.performPoseEstimation(im.getPlanes()[0].getBuffer(), im.getWidth(),im.getHeight(), NativePoseEstimatorUtil.NUM_FEATURE_POINTS);
                     poseListener.onPose(im, rotationAndTranslationVec);
+                    long difference = System.currentTimeMillis() - startTime;
+                    count++;
+                    movingAverage = ((movingAverage*(count-1))+difference)/count;
 
+                    logger.log(Level.INFO,"Count "+count+" "+ "Current Execution Time - "+difference+ "  Moving Average: "+movingAverage);
                     im.close();
                 }
                 catch (Exception e) {
